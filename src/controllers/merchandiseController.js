@@ -6,10 +6,12 @@ const VALID_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "One Size"];
 // Create new merchandise
 exports.createMerchandise = async (req, res) => {
   try {
-    const { name, description, price, category, sizes, stockCount } = req.body;
+    const { name, description, price, category, stockCount } = req.body;
 
     // Handle multiple image uploads
-    const images = req.files.map((file) => file.path);
+    console.log(req.files.images);
+
+    const images = req.files.images.map((file) => file.path);
 
     const merchandise = new Merchandise({
       name,
