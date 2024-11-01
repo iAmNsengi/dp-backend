@@ -1,28 +1,57 @@
-const Event = require('../models/Event');
+const Event = require("../models/Event");
 
 // Create new event
 exports.createEvent = async (req, res) => {
   try {
     const eventData = { ...req.body };
-    
+
     // Handle image upload
     if (req.file) {
       eventData.image = req.file.path;
     }
 
-    // Parse date if it's sent as string
-    if (eventData.date) {
-      eventData.date = new Date(eventData.date);
-    }
+    // Handle date and time
+    try {
+      if (eventData.date && eventData.time) {
+        const [year, month, day] = eventData.date.split("-").map(Number);
+        const [hours, minutes] = eventData.time.split(":").map(Number);
 
+        const eventDate = new Date(year, month - 1, day, hours, minutes);
+
+        // Validate if the date is valid
+        if (isNaN(eventDate.getTime())) {
+          return res.status(400).json({
+            message: "Invalid date or time format",
+            details:
+              "Please use YYYY-MM-DD format for date and HH:mm format for time",
+          });
+        }
+
+        eventData.date = eventDate;
+      }
+    } catch (error) {
+      return res.status(400).json({
+        message: "Date parsing error",
+        details:
+          "Please use YYYY-MM-DD format for date and HH:mm format for time",
+      });
+    }
     const event = new Event(eventData);
     await event.save();
-    
+
     res.status(201).json(event);
   } catch (error) {
+    // Handle validation errors
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: "Validation Error",
+        details: Object.values(error.errors).map((err) => err.message),
+      });
+    }
+
     res.status(400).json({
-      message: 'Error creating event',
-      error: error.message
+      message: "Error creating event",
+      error: error.message,
     });
   }
 };
@@ -37,16 +66,16 @@ exports.getEvents = async (req, res) => {
       startDate,
       endDate,
       limit = 10,
-      page = 1
+      page = 1,
     } = req.query;
 
     // Build query
     const query = {};
-    
+
     if (status) query.status = status;
     if (eventType) query.eventType = eventType;
-    if (featured) query.featured = featured === 'true';
-    
+    if (featured) query.featured = featured === "true";
+
     // Date range filter
     if (startDate || endDate) {
       query.date = {};
@@ -68,13 +97,13 @@ exports.getEvents = async (req, res) => {
       pagination: {
         current: parseInt(page),
         pages: Math.ceil(total / parseInt(limit)),
-        total
-      }
+        total,
+      },
     });
   } catch (error) {
     res.status(500).json({
-      message: 'Error fetching events',
-      error: error.message
+      message: "Error fetching events",
+      error: error.message,
     });
   }
 };
@@ -84,13 +113,13 @@ exports.getEvent = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
     if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+      return res.status(404).json({ message: "Event not found" });
     }
     res.json(event);
   } catch (error) {
     res.status(500).json({
-      message: 'Error fetching event',
-      error: error.message
+      message: "Error fetching event",
+      error: error.message,
     });
   }
 };
@@ -99,7 +128,7 @@ exports.getEvent = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const updates = { ...req.body };
-    
+
     // Handle image upload
     if (req.file) {
       updates.image = req.file.path;
@@ -110,21 +139,20 @@ exports.updateEvent = async (req, res) => {
       updates.date = new Date(updates.date);
     }
 
-    const event = await Event.findByIdAndUpdate(
-      req.params.id,
-      updates,
-      { new: true, runValidators: true }
-    );
+    const event = await Event.findByIdAndUpdate(req.params.id, updates, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+      return res.status(404).json({ message: "Event not found" });
     }
 
     res.json(event);
   } catch (error) {
     res.status(400).json({
-      message: 'Error updating event',
-      error: error.message
+      message: "Error updating event",
+      error: error.message,
     });
   }
 };
@@ -134,13 +162,13 @@ exports.deleteEvent = async (req, res) => {
   try {
     const event = await Event.findByIdAndDelete(req.params.id);
     if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+      return res.status(404).json({ message: "Event not found" });
     }
-    res.json({ message: 'Event deleted successfully' });
+    res.json({ message: "Event deleted successfully" });
   } catch (error) {
     res.status(500).json({
-      message: 'Error deleting event',
-      error: error.message
+      message: "Error deleting event",
+      error: error.message,
     });
   }
 };
@@ -150,16 +178,16 @@ exports.getUpcomingEvents = async (req, res) => {
   try {
     const events = await Event.find({
       date: { $gte: new Date() },
-      status: 'upcoming'
+      status: "upcoming",
     })
-    .sort({ date: 1 })
-    .limit(5);
-    
+      .sort({ date: 1 })
+      .limit(5);
+
     res.json(events);
   } catch (error) {
     res.status(500).json({
-      message: 'Error fetching upcoming events',
-      error: error.message
+      message: "Error fetching upcoming events",
+      error: error.message,
     });
   }
 };
@@ -168,7 +196,7 @@ exports.getUpcomingEvents = async (req, res) => {
 exports.updateEventStatus = async (req, res) => {
   try {
     const { status } = req.body;
-    
+
     const event = await Event.findByIdAndUpdate(
       req.params.id,
       { status },
@@ -176,14 +204,14 @@ exports.updateEventStatus = async (req, res) => {
     );
 
     if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+      return res.status(404).json({ message: "Event not found" });
     }
 
     res.json(event);
   } catch (error) {
     res.status(400).json({
-      message: 'Error updating event status',
-      error: error.message
+      message: "Error updating event status",
+      error: error.message,
     });
   }
 };
