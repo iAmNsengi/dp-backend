@@ -4,13 +4,11 @@ exports.createTrack = async (req, res) => {
   try {
     const { title, featuring } = req.body;
     const coverImage = req.files["cover"][0].path;
-    const audioFile = req.files["audio"][0].path;
 
     const track = new Track({
       title,
       featuring,
       coverImage,
-      audioFile,
     });
 
     await track.save();
