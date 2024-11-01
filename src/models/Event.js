@@ -21,45 +21,8 @@ const eventSchema = new mongoose.Schema(
       required: true,
     },
     venue: {
-      name: {
-        type: String,
-        required: true,
-      },
-      address: {
-        type: String,
-        required: true,
-      },
-      city: {
-        type: String,
-        required: true,
-      },
-      country: {
-        type: String,
-        required: true,
-      },
-    },
-    eventType: {
       type: String,
       required: true,
-      enum: [
-        "Club Performance",
-        "Festival",
-        "Private Event",
-        "Concert",
-        "Other",
-      ],
-    },
-    ticketInfo: {
-      price: {
-        type: Number,
-        required: true,
-        min: 0,
-      },
-      purchaseLink: String,
-      available: {
-        type: Boolean,
-        default: true,
-      },
     },
     image: {
       type: String,

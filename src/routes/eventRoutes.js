@@ -12,7 +12,7 @@ router.get("/", eventController.getEvents);
 router.get("/upcoming", eventController.getUpcomingEvents);
 router.get("/:id", eventController.getEvent);
 
-// Protected routes (require authentication)
+// Protected routes (to require authentication)
 router.post("/", eventUpload, eventController.createEvent);
 router.patch("/:id", eventUpload, eventController.updateEvent);
 router.delete("/:id", eventController.deleteEvent);
