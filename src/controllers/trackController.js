@@ -5,6 +5,8 @@ exports.createTrack = async (req, res) => {
     const { title, featuring } = req.body;
     const coverImage = req.files["cover"][0].path;
 
+    console.log(coverImage);
+
     const track = new Track({
       title,
       featuring,
@@ -42,17 +44,16 @@ exports.getTrack = async (req, res) => {
 exports.updateTrack = async (req, res) => {
   try {
     const updates = { ...req.body };
-    
+
     // Handle cover image update if provided
     if (req.files && req.files["cover"]) {
       updates.coverImage = req.files["cover"][0].path;
     }
 
-    const track = await Track.findByIdAndUpdate(
-      req.params.id,
-      updates,
-      { new: true, runValidators: true }
-    );
+    const track = await Track.findByIdAndUpdate(req.params.id, updates, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!track) {
       return res.status(404).json({ message: "Track not found" });
@@ -67,7 +68,7 @@ exports.updateTrack = async (req, res) => {
 exports.deleteTrack = async (req, res) => {
   try {
     const track = await Track.findByIdAndDelete(req.params.id);
-    
+
     if (!track) {
       return res.status(404).json({ message: "Track not found" });
     }

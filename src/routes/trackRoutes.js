@@ -5,10 +5,7 @@ const { auth } = require("../middleware/auth");
 const upload = require("../middleware/upload");
 
 // Configure multer for track files
-const trackUpload = upload.fields([
-  { name: "audio", maxCount: 1 },
-  { name: "coverImage", maxCount: 1 },
-]);
+const trackUpload = upload.fields([{ name: "cover", maxCount: 1 }]);
 
 // Public routes
 router.get("/", trackController.getTracks);
