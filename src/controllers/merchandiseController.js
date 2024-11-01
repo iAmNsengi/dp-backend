@@ -1,22 +1,12 @@
 const Merchandise = require("../models/Merchandise");
 
 // Add this constant at the top of the file
-const VALID_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'One Size'];
+const VALID_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "One Size"];
 
 // Create new merchandise
 exports.createMerchandise = async (req, res) => {
   try {
     const { name, description, price, category, sizes, stockCount } = req.body;
-
-    // Parse sizes string into array if it's a string
-    const sizesArray = typeof sizes === 'string' ? [sizes] : sizes;
-
-    // Validate sizes
-    if (sizesArray && !sizesArray.every(size => VALID_SIZES.includes(size))) {
-      return res.status(400).json({ 
-        message: `Invalid size(s). Allowed sizes are: ${VALID_SIZES.join(', ')}`
-      });
-    }
 
     // Handle multiple image uploads
     const images = req.files.map((file) => file.path);
@@ -27,7 +17,6 @@ exports.createMerchandise = async (req, res) => {
       price,
       category,
       images,
-      sizes: sizesArray || [],
       stockCount,
       inStock: Boolean(stockCount),
     });
@@ -70,9 +59,11 @@ exports.updateMerchandise = async (req, res) => {
     // Validate sizes if included in update
     if (updates.sizes) {
       const sizesArray = JSON.parse(updates.sizes);
-      if (!sizesArray.every(size => VALID_SIZES.includes(size))) {
-        return res.status(400).json({ 
-          message: `Invalid size(s). Allowed sizes are: ${VALID_SIZES.join(', ')}`
+      if (!sizesArray.every((size) => VALID_SIZES.includes(size))) {
+        return res.status(400).json({
+          message: `Invalid size(s). Allowed sizes are: ${VALID_SIZES.join(
+            ", "
+          )}`,
         });
       }
       updates.sizes = sizesArray;
