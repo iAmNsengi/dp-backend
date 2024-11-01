@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
 require("dotenv").config();
+const path = require('path');
 
 const app = express();
 
@@ -10,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use("/uploads", express.static("src/uploads"));
+app.use("/uploads", express.static(path.join(__dirname, 'uploads')));
 
 // Database connection
 mongoose

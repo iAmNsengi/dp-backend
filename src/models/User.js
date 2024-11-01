@@ -26,20 +26,8 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
-    role: {
-      type: String,
-      enum: ["admin", "editor", "user"],
-      default: "user",
-    },
     profileImage: {
       type: String,
-    },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-    lastLogin: {
-      type: Date,
     },
   },
   {
