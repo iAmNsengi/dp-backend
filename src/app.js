@@ -20,7 +20,7 @@ mongoose
 
 // Routes
 app.use("/api/tracks", require("./routes/trackRoutes"));
-// app.use("/api/merchandise", require("./routes/merchandiseRoutes"));
+app.use("/api/merchandise", require("./routes/merchandiseRoutes"));
 // app.use("/api/events", require("./routes/eventRoutes"));
 // app.use("/api/auth", require("./routes/authRoutes"));
 
