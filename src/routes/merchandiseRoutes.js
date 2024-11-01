@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const merchandiseController = require("../controllers/merchandiseController");
 const upload = require("../middleware/upload");
-// const auth = require("../middleware/auth") || ""; // Assuming you have auth middleware
 
 // Configure multer for merchandise images
 const merchandiseUpload = upload.array("images", 5); // Allow up to 5 images per item
@@ -11,7 +10,7 @@ const merchandiseUpload = upload.array("images", 5); // Allow up to 5 images per
 router.get("/", merchandiseController.getAllMerchandise);
 router.get("/:id", merchandiseController.getMerchandise);
 
-// Protected routes (require authentication)
+// Protected routes (to require authentication)
 router.post("/", merchandiseUpload, merchandiseController.createMerchandise);
 router.patch(
   "/:id",
