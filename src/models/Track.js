@@ -13,10 +13,6 @@ const trackSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    audioFile: {
-      type: String,
-      required: true,
-    },
     releaseDate: {
       type: Date,
       default: Date.now(),
