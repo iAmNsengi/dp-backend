@@ -9,7 +9,7 @@ router.use(cors())
 
 // Public routes
 router.post('/register', authController.register);
-router.post('/login', authController.login);
+router.post('/login', cors(), authController.login);
 
 // Protected routes
 router.get('/me', auth, authController.getCurrentUser);

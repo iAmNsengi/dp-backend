@@ -3,7 +3,7 @@ const Track = require("../models/Track");
 exports.createTrack = async (req, res) => {
   try {
     const { title, featuring } = req.body;
-    const coverImage = req.files["cover"][0].path;
+    const coverImage = req.files["coverImage"][0].path;
 
     console.log(coverImage);
 
